@@ -1,35 +1,28 @@
 # HRV-WA
-CIRCular robUST statistical methodology to analyse human molecular rhythms from post-mortem samples.
+HRV-WA algorithm, based on Frequency Möbius  Modulated (FMM) models, analyses 24-h HRV rhythms directly from RR data. HRV-WA not only predicts HRV, but also identifies and assigns Direct, and at times, Guided wave(s) involved in the analysis.
 
 # How to use 
-CIRCUST is achieved in R and is easy to use. 
-The code provided in this GitHub replicated the four steps described in CIRCUST paper (url).
+HRV-WA is achieved in R and is easy to use. 
+The code provided in this GitHub replicated the four steps described in [citation].
 
-Run the R script named runCIRCURST.R to ,conduct the methodology.
-The file matrixIn.RData is loaded on the R script and serves as example of unorderd post-mortem gene expression matrix.
-matrixIn: gene expression matrix of size 56200X479 (genes X unordered samples/individuals) at a given tissue.
+Run the R script named runHRV-WA.R to ,conduct the methodology.
+The file dataExample.RData is loaded on the R script and serves as example of 24-h RR data across 5-min time intervals.
 
-INPUTS, see CIRCUST paper for details: 
-  - Expression matrix (matrixIn).
-  - Number of random selections of the genes at the TOP (K).
-  - Name tissue (nameTissue).
-  - Core clock gene names (coreG).
+INPUTS: 
+  - Vector of RR data (data).
 
-0. Preparatory work.
-When you use our tool, you should source R source functions and install some R packages detailed. Run in the Rscrip:
-  source("functionGTEX_cores.R")
-
-1. Preprocessing.
-Run the code line under this name in runCIRCURST.R to clean and normalize the data.
-
-2. Preliminary order.
-Run the code lines under this name in runCIRCURST.R to obtain a preliminary order based on the core clok gene
-
-3. TOP Rhythmic orderings.
-Run the code lines under this name in runCIRCURST.R to derive the tissue-specific TOP gene list and K circular orders based on K random selections. 
-
-4. Robust Estimation.
-Run the code lines under this name in runCIRCURST.R to compute FMM predictions as functions of K circular ordering for the TOP genes. 
+RUN:
+````
+load(file="dataExample.RData")
+HRV_WA(data=dataExample)
+````
 
 OUTPUT:
-  - Data frame with the FMM parameter estimations for TOP genes, k=1,...,K (outs).
+  - Matrix with the FMM parameter estimations for Direct (and Guided) FMM wave(s) assigned.
+  ````
+     Comp         M         A    Alpha     Beta      Omega       t_U      t_L       R2_m
+Direct    1 0.7653564 0.2102229 4.335471 4.168209 0.57085754 0.5712119 2.777274 0.79368260
+Guided    3 0.7653564 0.1114734 2.248823 4.381641 0.05958329 5.3053883 5.556942 0.04729768
+````
+  - Plots with the HRV prediction and wave decomposition. 
+![image](https://user-images.githubusercontent.com/24298539/209979899-31c967de-408a-44e4-b1ee-60a0c9425fe4.png)

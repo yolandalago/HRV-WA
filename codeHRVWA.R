@@ -1,4 +1,5 @@
 
+
 require("FMM")
 
 HRV_WA<-function(data=data){
@@ -23,68 +24,54 @@ tableOut_m_pac<-c()
 colnames(tableOut_m_pac)<-c("Pac","TotalComp","Comp","M","A","Alpha","Beta","Omega","t_U","t_L","R2_m")
 fmm3NSRDB<-tableOut_m_pac[tableOut_m_pac[,"TotalComp"]==3,]
 
-
-
-compNSRDB<-c()
-#for(i in 1:length(datosNSRDB)){#activate if more than one subject
-filasPac<-fmm3NSRDB[fmm3NSRDB[,"Pac"]==i,]
-
-#Inizialitation
-C1<-NA;C2<-NA
-
-#Direct Wave
-ordenFilas<-order(filasPac[,"R2_m"],decreasing=TRUE)
-sigueC1<-TRUE
-for(f in 1:nrow(filasPac)){
-	fila<-ordenFilas[f]
-	paramFila<-filasPac[fila,c("A","Beta","Omega","t_U","t_L","R2_m")]
-	if(condC1_new(paramFila)[[1]] & sigueC1){
-		C1<-fila
-		sigueC1<-FALSE
-		tuC1<-condC1(paramFila)[[2]]
-	}
-}
-
-#Guided Wave
-
-sigueC2<-TRUE
-for(f in 1:nrow(filasPac)){
-	fila<-ordenFilas[f]
-	paramFila<-filasPac[fila,c("A","Beta","Omega","t_U","t_L","R2_m")]
-	if(!is.na(C1)){
-		if(fila!=C1 ){#& !is.na(C1)){#cambio
-			if(condC2_new(paramFila,tuC1) & sigueC2){
-				C2<-fila
-				sigueC2<-FALSE
-				tuC2<-paramFila[3]
+leoNsrdb<-fmm3NSRDB
+add2Nsrdb<-c()
+#uniPacNsrdb<-unique(leoNsrdb[,"Pac"])#activate if more than one subject
+#for(i in 1:length(uniPacNsrdb)){#activate if more than one subject
+	#filas<-which(uniPacNsrdb[i]==leoNsrdb[,"Pac"])#activate if more than one subject
+	#mSmall<-(leoNsrdb[filas,])[order(leoNsrdb[filas,"R2_m"],decreasing=TRUE),]#activate if more than one subject
+	mSmall<-fmm3NSRDB
+	asig<-0
+	noche<-FALSE
+	k<-1
+	while(asig<2 & k<=3){
+		if(mSmall[k,"Omega"]>0.035 & mSmall[k,"R2_m"]>0.03 & mSmall[k,"A"]>0.05 ){
+			if(mSmall[k,"Alpha"]>pi & noche==FALSE ){#noche no esignada o dia
+				asig<-asig+1
+				noche<-TRUE
+				add2Nsrdb<-rbind(add2Nsrdb,mSmall[k,])
+				k<-k+1
+			}else{#ya se ha asignado una noche, o bien es dia
+				if(mSmall[k,"Alpha"]<(pi-pi/8)){
+					asig<-asig+1
+					add2Nsrdb<-rbind(add2Nsrdb,mSmall[k,])
+					k<-k+1
+				}else{#si no es dia sigue sumando
+					k<-k+1
+				}
 			}
-		}
-	}else{
-		if(condC2_new(paramFila,tuC1) & sigueC2){
-			C2<-fila
-			sigueC2<-FALSE
-			tuC2<-paramFila[3]
-		}
+		}else{
+			k<-k+1
+		}#si es ruido sigue
 	}
-}
-compNSRDB<-rbind(compNSRDB,c(C1,C2))
 #}
-
 
 
 
 ################################################################
 #Outputs and plots
 
-addFila<-c()
 m<-3
-nComp<-c()
-r2_Fmm<-c()
-r2_Cos<-c()
+addR2FmmNSRDB<-c()
+addR2CosNSRDB<-c()
+
 tu_Cos_NSRDB<-c()
 tl_Cos_NSRDB<-c()
-#for(i in 1:length(datosNSRDB)){
-
+r2_Fmm<-c()
+nComp<-c()
+i=1
+compNSRDB<-matrix(c(add2Nsrdb[,3]),1,2)
+x11()
 	
 
 	#	Plots
@@ -109,15 +96,14 @@ tl_Cos_NSRDB<-c()
 			ajuste<-Madj+a+b#storeNSRDB[[m*(i-1)+3]][[1]]@data[1]+(a-a[1])
 		}
 	}
-	numFmm<-sum((ajuste-f)^2)
-	denFmm<-sum((f-mean(f))^2)
+	numFmm<-sum((ajuste-data)^2)
+	denFmm<-sum((data-mean(data))^2)
 	r2_Fmm[i]<-1-numFmm/denFmm
 	nComp[i]<-sum(!is.na(compNSRDB[i,]),na.rm=TRUE)
 	plot(storeNSRDB[[m*(i-1)+3]][[1]]@timePoints,storeNSRDB[[m*(i-1)+3]][[1]]@data,col=1,type="p",ylab="",xlab="",xaxt="n",
-		main=paste("Pac_",i," Data and Prediction",sep=""))
-	lines(storeNSRDB[[m*(i-1)+3]][[1]]@timePoints,ajuste,col=4,lwd=3)
+		main=paste("Pac_",i,"_Fitted R2: ",round(r2_Fmm[i],3),sep=""))
+	lines(storeNSRDB[[m*(i-1)+3]][[1]]@timePoints,ajuste,col=3,lwd=3)
 	axis(1,c(0,pi/2,pi,3*pi/2,2*pi),c("0","6","12","18","24"))
-	legend("topright",c("RR Data","HRV Prediction"),lwd=c(NA,3),col=c(1,4),lty=c(NA,1),pch=c(1,NA))
 
 	#COMPONENTES
 	comp1<-NA;comp2<-NA;comp3<-NA
@@ -142,87 +128,16 @@ tl_Cos_NSRDB<-c()
 		}
 	}
 
-	plot(storeNSRDB[[m*(i-1)+3]][[1]]@timePoints,compA,col=3,lwd=3,type="l",ylab="",xlab="",xaxt="n",
-		main=paste("Pac_",i," Components",sep=""),ylim=c(min(c(compA,compB),na.rm=TRUE),max(c(compA,compB),na.rm=TRUE)))
-	if(!is.na(comp2))lines(storeNSRDB[[m*(i-1)+3]][[1]]@timePoints,compB,col="orange",lwd=3)
+	plot(storeNSRDB[[m*(i-1)+3]][[1]]@timePoints,compA,col="grey",lwd=3,type="l",ylab="",xlab="",xaxt="n",
+		main=paste("Pac_",i,"_Components",sep=""),ylim=c(min(c(compA,compB),na.rm=TRUE),max(c(compA,compB),na.rm=TRUE)))
+	if(!is.na(comp2))lines(storeNSRDB[[m*(i-1)+3]][[1]]@timePoints,compB,col="lightblue",lwd=3)
 
 	axis(1,c(0,pi/2,pi,3*pi/2,2*pi),c("0","6","12","18","24"))
-	legend("topright",c("Direct","Guided"),lwd=c(3,2),col=c(3,"orange"),lty=c(1,1))
+	legend("topright",c("Pricipal","Secondary"),lwd=rep(3,2),col=c("grey","lightblue"),lty=rep(1,2))
 
-
-	#	Tabla
-	
-	subTabla<-fmm3NSRDB[fmm3NSRDB[,"Pac"]==i,]
-	for(j in 1:ncol(compNSRDB)){
-		if(!is.na(compNSRDB[i,j])){
-			addFila<-rbind(addFila,c(unlist(subTabla[compNSRDB[i,j],3:ncol(subTabla)])))
-		}else{
-			addFila<-rbind(addFila,c(rep(NA,ncol(subTabla)-2)))
-		}
-	}
-
-#}
-	return(addFila)
+return(add2Nsrdb[,-c(1:3)])
 }
-
-
 #################	Functions ###########
-
-condC1_new<-function(params){#"A","Beta","Omega","t_U","t_L","R2_m"
-	a<-params[1]
-	b<-params[2]
-	o<-params[3]
-	tu<-params[4]
-	tl<-params[5]
-	r2<-params[6]
-	thr1<-pi/8
-	if(o<0.2){
-		if(b<pi/4 | b>7*pi/4)tu<-tl
-	}else{
-		if(o>=0.2 & o<0.4){
-			if(b<pi/2 | b>3*pi/2)tu<-tl
-		}else{
-			if(b<3*pi/4 | b>5*pi/4)tu<-tl
-		}
-	}
-	value<-r2>0.03 & a>0.075 & o>0.0275 & ((tu<pi & tu>thr1) | (tu>pi & tu<(2*pi-thr1)))
-	return(list(value,tu))
-}
-#params=paramFila
-#tu=tuC1
-condC2_new<-function(params,tu){#"A","Beta","Omega","t_U","t_L","R2_m"
-	a<-params[1]
-	b<-params[2]
-	o<-params[3]
-	tu2<-params[4]
-	tl2<-params[5]
-	r2<-params[6]
-	tu1<-tu
-	thr1<-pi/8
-
-	if(o<0.2){
-		if(b<pi/4 | b>7*pi/4)tu2<-tl2
-	}else{
-		if(o>=0.2 & o<0.4){
-			if(b<pi/2 | b>3*pi/2)tu2<-tl2
-		}else{
-			if(b<3*pi/4 | b>5*pi/4)tu2<-tl2
-		}
-	}
-	if(!is.na(tu1)){
-		if(tu1<pi){
-			return( r2>0.03 & a>0.05 & o>0.0275 & (tu2>(tu1+thr1)%%(2*pi) &
-										 ((tu2>pi & o>0.05 & (b>pi/2 & b<3*pi/2))| tu2>5*pi/4) &
-										 tu2<(2*pi-thr1)) )
-		}else{
-			return( r2>0.03 & a>0.05 & o>0.0275 & (tu2<(tu1)%%(2*pi) & 
-                                                             ((tu2<(3*pi/2) & o>0.05 & (b>pi/2 & b<3*pi/2))) & tu2>(thr1)) )
-		}
-	}else{
-		return( r2>0.03 & a>0.05 & o>0.0275 & ((tu2<(3*pi/2) & tu2>thr1) | (((tu2>pi & o>0.05 & (b>pi/2 & b<3*pi/2))| tu2>5*pi/4)  & tu2<(2*pi-thr1)) ))
-	}
-}
-
 
 
 ff<-function(M){
@@ -244,15 +159,3 @@ computeA_heart<-function(f,s,m){
 }
 
 
- condC1<-function(params){#"A","Beta","Omega","t_U","t_L","R2_m"
-a<-params[1]
-b<-params[2]
-o<-params[3]
-tu<-params[4]
-tl<-params[5]
-r2<-params[6]
-thr1<-pi/8
-if(b<pi/4 | b>7*pi/4)tu<-tl
-value<-r2>0.03 & a>0.1 & o>0.0275 & ((tu<pi & tu>thr1) | (tu>3*pi/2 & tu<(2*pi-thr1)))
-return(list(value,tu))
-}

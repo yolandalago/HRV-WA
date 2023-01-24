@@ -5,34 +5,35 @@ HRV-WA algorithm, based on Frequency Möbius  Modulated (FMM) models [1], analys
 HRV-WA code is implemented in R language programming and is easy to use. 
 The code provided in this repository replicates the steps described in [citation] where HRV-WA was described.
 
-Open the R script named runHRV-WA.R to conduct the methodology. Source R functions loaded in codeHRVWA.R must be loaded. 
+Open the R script named ``runHRV-WA.R`` including an example to conduct the methodology. 
+First, source R functions saved in ``codeHRVWA.R`` must be loaded. 
 
 ````
 source("codeHRVWA.R")
 ````
 
-The file dataExample.RData is loaded on the R script and serves as example of 24-h RR data across 5-min time intervals.
+Then, load the file ``dataExample.RData``. It contains an example of 24-h RR data across 5-min time intervals that serves as input.
 
 INPUTS: 
 ````
 load(file="dataExample.RData")
 ````
-HRV-WA algorithm is applied on the data as follows.
+HRV-WA algorithm is applied on the data using the function ``HRV_WA``.
 
 RUN:
 ````
 HRV_WA(data=dataExample)
 ````
 
-A matrix with the FMM parameter estimations for Principal and Secondary FMM wave(s) assigned is given. 
+A matrix with the FMM parameter estimations for Principal and Secondary FMM wave(s) is given. 
 
 OUTPUT:
-
 ````
      Comp         M         A    Alpha     Beta      Omega       t_U      t_L       R2_m
 Principal    1 0.7653564 0.2102229 4.335471 4.168209 0.57085754 0.5712119 2.777274 0.79368260
 Secondary    3 0.7653564 0.1114734 2.248823 4.381641 0.05958329 5.3053883 5.556942 0.04729768
 ````
+
 In addition, plots with the HRV prediction and wave decomposition are also provided. 
 ![Pac_2_intro](https://user-images.githubusercontent.com/24298539/214274483-c23af48c-2ca8-48aa-a4bb-677f4abedbf1.jpg)
 

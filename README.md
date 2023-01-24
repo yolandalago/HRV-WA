@@ -40,4 +40,5 @@ In addition, plots with the HRV prediction and wave decomposition are also provi
 
 # References
 [1] Rueda, C., Larriba, Y. & Peddada, S.D. Frequency Modulated Möbius Model Accurately Predicts Rhythmic Signals in Biological and Physical Sciences. Sci Rep 9, 18701 (2019). https://doi.org/10.1038/s41598-019-54569-1
+
 [citation]

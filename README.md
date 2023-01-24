@@ -6,6 +6,7 @@ HRV-WA code is implemented in R language programming and is easy to use.
 The code provided in this repository replicates the steps described in [citation] where HRV-WA was described.
 
 Open the R script named ``runHRV-WA.R`` including an example to conduct the methodology. 
+
 First, source R functions saved in ``codeHRVWA.R`` must be loaded. 
 
 ````

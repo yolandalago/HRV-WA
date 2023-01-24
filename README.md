@@ -2,8 +2,8 @@
 HRV-WA algorithm, based on Frequency Möbius  Modulated (FMM) models [1], analyses 24-h HRV rhythms from RR data. HRV-WA predicts HRV and identifies Principal and Secondary waves involved in HRV analysis, see [citation] for details.
 
 # How to use 
-HRV-WA is achieved in R and is easy to use. 
-The code provided in this repositury replicates the steps described in [citation] where HRV-WA was described.
+HRV-WA code is implemented in R language programming and is easy to use. 
+The code provided in this repository replicates the steps described in [citation] where HRV-WA was described.
 
 Run the R script named runHRV-WA.R to conduct the methodology.
 The file dataExample.RData is loaded on the R script and serves as example of 24-h RR data across 5-min time intervals.

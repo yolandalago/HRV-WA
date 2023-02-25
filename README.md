@@ -1,5 +1,5 @@
 # HRV-WA
-HRV-WA algorithm, based on Frequency Möbius  Modulated (FMM) models [1], analyses 24-h HRV rhythms from RR data. HRV-WA predicts HRV and identifies Principal and Secondary waves involved in HRV analysis, see [citation] for details.
+HRV-WA algorithm, based on Frequency Möbius  Modulated (FMM) models [1], analyses 24-h HRV rhythms from RR data. HRV-WA predicts HRV and identifies Nocturnal and Diurnal waves involved in HRV analysis, see [citation] for details.
 
 # How to use 
 HRV-WA code is implemented in R language programming and is easy to use. 
@@ -31,8 +31,8 @@ A matrix with the FMM parameter estimations for Principal and Secondary FMM wave
 OUTPUT:
 ````
      Comp         M         A    Alpha     Beta      Omega       t_U      t_L       R2_m
-Principal    1 0.7653564 0.2102229 4.335471 4.168209 0.57085754 0.5712119 2.777274 0.79368260
-Secondary    3 0.7653564 0.1114734 2.248823 4.381641 0.05958329 5.3053883 5.556942 0.04729768
+Nocturnal    1 0.7653564 0.2102229 4.335471 4.168209 0.57085754 0.5712119 2.777274 0.79368260
+Diurnal    3 0.7653564 0.1114734 2.248823 4.381641 0.05958329 5.3053883 5.556942 0.04729768
 ````
 
 In addition, plots with the HRV prediction and wave decomposition are also provided. 

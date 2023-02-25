@@ -119,12 +119,12 @@ x11()
 			compA<-genPar(vPar[compNSRDB[i,2],],storeNSRDB[[m*(i-1)+3]][[1]]@timePoints)
 			compA<-storeNSRDB[[m*(i-1)+3]][[1]]@data[1]+compA-compA[1]
 			comp1<-compNSRDB[i,2]
-			comp2<-NA #faltaba y no pintaba bien cosinor, por eso hago las carpetas bis
+			comp2<-NA #
 		}else{
 			compA<-genPar(vPar[compNSRDB[i,1],],storeNSRDB[[m*(i-1)+3]][[1]]@timePoints)
 			compA<-storeNSRDB[[m*(i-1)+3]][[1]]@data[1]+compA-compA[1]
 			comp1<-compNSRDB[i,1]
-			comp2<-NA #faltaba y no pintaba bien cosinor, por eso hago las carpetas bis
+			comp2<-NA #
 		}
 	}
 
@@ -133,7 +133,7 @@ x11()
 	if(!is.na(comp2))lines(storeNSRDB[[m*(i-1)+3]][[1]]@timePoints,compB,col="lightblue",lwd=3)
 
 	axis(1,c(0,pi/2,pi,3*pi/2,2*pi),c("0","6","12","18","24"))
-	legend("topright",c("Pricipal","Secondary"),lwd=rep(3,2),col=c("grey","lightblue"),lty=rep(1,2))
+	legend("topright",c("Nocturnal","Diurnal"),lwd=rep(3,2),col=c("grey","lightblue"),lty=rep(1,2))
 
 return(add2Nsrdb[,-c(1:3)])
 }
